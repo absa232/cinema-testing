@@ -738,7 +738,7 @@
             <div id="private-link-area" style="display:none; margin-top: 10px;">
                 <div class="private-link-input-with-icon">
                     <input type="text" id="private-link-input" class="search-bar" placeholder="Paste your private .mp4 link...">
-                    <button id="private-link-play-btn" style="display:none;" onclick="changeMovie(document.getElementById('private-link-input').value)" aria-label="Play private link">
+                    <button id="private-link-play-btn" style="display:none;" onclick="playPrivateLinkMovie(document.getElementById('private-link-input').value)" aria-label="Play private link">
                         <svg viewBox="0 0 24 24" width="18" height="18" style="fill: currentColor;">
                             <path d="M8 5v14l11-7z"/>
                         </svg>
@@ -812,8 +812,9 @@
 
             database.ref('rooms/' + roomID).once('value').then(snap => {
                 const d = snap.val();
-                if(!d) database.ref('rooms/' + roomID).update({ playerX: myName, playerO: "Waiting...", loadingX: false, loadingO: false, videoSrc: "", subtitleSrc: "" }); 
+                if(!d) database.ref('rooms/' + roomID).update({ playerX: myName, playerO: "Waiting...", loadingX: false, loadingO: false, videoSrc: "", subtitleSrc: "", modalOpen: true }); 
                 else if(d['player' + mySymbol] !== myName) database.ref('rooms/' + roomID).update({ ['player' + mySymbol]: myName }); 
+                if(d && d.modalOpen === undefined) database.ref('rooms/' + roomID).update({ modalOpen: true });
             });
 
             document.getElementById("setup-area").style.display = "none"; 
@@ -987,6 +988,13 @@
                 const now = video.currentTime; const activeLine = subtitleData.find(s => now >= s.start && now <= s.end); const ghost = document.getElementById('subtitle-ghost');
                 if (activeLine) { if (ghost.innerText !== activeLine.text.replace(/<br>/g, '\n')) { ghost.innerHTML = `<span>${activeLine.text}</span>`; } } else { ghost.innerHTML = ""; }
             };
+
+            // Listen for modalOpen state changes to sync modal closure across all users
+            database.ref('rooms/' + roomID + '/modalOpen').on('value', snap => {
+                if (snap.val() === false) {
+                    hideRomanticMovieOverlay();
+                }
+            });
 
             cinemaRef.on('value', snap => {
                 if(isDragging) return; 
@@ -1185,6 +1193,7 @@
 
         function continueOurMoment() {
             const restore = previousMomentState;
+            database.ref('rooms/' + roomID).update({ modalOpen: false });
             hideRomanticMovieOverlay();
 
             if(!restore || !restore.videoSrc) return;
@@ -1349,7 +1358,10 @@
 
                 card.addEventListener('click', () => {
                     const chosenUrl = card.dataset.videoUrl;
-                    if(chosenUrl) setVideoSrcByUrl(chosenUrl);
+                    if(chosenUrl) {
+                        database.ref('rooms/' + roomID).update({ modalOpen: false });
+                        setVideoSrcByUrl(chosenUrl);
+                    }
                     hideRomanticMovieOverlay();
                 });
 
@@ -1361,6 +1373,14 @@
             const q = (document.getElementById('movie-search').value || '').toLowerCase();
             const filtered = romanticAllMovies.filter(m => m.name.toLowerCase().includes(q));
             renderRomanticMovies(filtered);
+        }
+
+        function playPrivateLinkMovie(url) {
+            if (typeof url === 'string' && url.trim()) {
+                database.ref('rooms/' + roomID).update({ modalOpen: false });
+                setVideoSrcByUrl(url.trim());
+                hideRomanticMovieOverlay();
+            }
         }
     </script>
 </body>
