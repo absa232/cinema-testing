@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Secret Space ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;500;600&family=Noto+Color+Emoji&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -99,7 +99,7 @@
             width: 20px; height: 50px; background: var(--heart-red); border: 2px solid white;
             border-radius: 50px; display: flex; align-items: center; justify-content: center;
             cursor: pointer; z-index: 10004; box-shadow: 0 0 15px var(--heart-red);
-            transition: all 0.3s ease; color: white; font-size: 10px; animation: pulseGlow 3s infinite;
+            transition: all 0.3s ease; color: white; font-size: 12px; animation: pulseGlow 3s infinite; font-family: 'Poppins', sans-serif; font-weight: 600;
         }
         @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 10px var(--heart-red); } 50% { box-shadow: 0 0 20px #ff9aa2, 0 0 5px white; } }
         #main-content.chat-hidden #chat-toggle { position: fixed; left: 0; right: auto; transform: translateY(-50%); border-radius: 0 12px 12px 0; height: 60px; width: 24px; }
@@ -208,7 +208,7 @@
 
         .controls-main { display: flex; align-items: center; gap: 20px; color: white; }
         .right-controls { margin-left: auto; display: flex; align-items: center; gap: 12px; }
-        .play-pause { cursor: pointer; font-size: 2.5rem; width: 35px; text-align: center; }
+        .play-pause { cursor: pointer; font-size: 2.5rem; width: 35px; text-align: center; font-family: 'Poppins', sans-serif; font-weight: 600; }
         .time-display { font-size: 0.85rem; font-weight: 500; font-family: 'Poppins', sans-serif; min-width: 100px; }
         .seek-btn-svg { width: 30px; height: 30px; cursor: pointer; opacity: 0.85; transition: 0.2s; fill: white; margin: 0 2px; }
         
@@ -250,17 +250,17 @@
         .petal { position: absolute; border-radius: 150% 0 150% 0; width: 15px; height: 15px; pointer-events: none; z-index: 10002; animation: petalFall linear forwards; }
         @keyframes petalFall { 0% { transform: translateY(-20px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
 
-        .reaction-bar { min-height: 70px; background: var(--velvet-berry); border-radius: 40px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 2px solid white; flex-wrap: nowrap; padding: 5px 12px; flex-shrink: 0; z-index: 100; }
-        .react-btn { font-size: 1.5rem; cursor: pointer; transition: 0.2s; user-select: none; }
+        .reaction-bar { min-height: 70px; background: var(--velvet-berry); border-radius: 40px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 2px solid white; flex-wrap: nowrap; padding: 5px 12px; flex-shrink: 0; z-index: 100; font-family: 'Poppins', 'Noto Color Emoji', sans-serif; }
+        .react-btn { font-size: 1.5rem; cursor: pointer; transition: 0.2s; user-select: none; font-family: 'Noto Color Emoji', sans-serif; }
         .react-btn:hover { transform: scale(1.3); }
-        .special-btn { width: auto; background: white; color: var(--heart-red); padding: 7px 15px; font-size: 0.7rem; border-radius: 10px; font-weight: 600; border: none; cursor: pointer; transition: 0.3s; font-family: 'Poppins', sans-serif; white-space: nowrap; }
+        .special-btn { width: auto; background: white; color: var(--heart-red); padding: 7px 15px; font-size: 0.7rem; border-radius: 10px; font-weight: 600; border: none; cursor: pointer; transition: 0.3s; font-family: 'Poppins', 'Noto Color Emoji', sans-serif; white-space: nowrap; }
 
-        .reaction-popup { position: absolute; bottom: 15%; display: flex; flex-direction: row; align-items: center; padding: 8px 25px; border-radius: 50px; border: 1.5px solid rgba(255, 255, 255, 0.5); pointer-events: none; z-index: 10015; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: androidFloat 3.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; backdrop-filter: blur(4px); gap: 12px; }
-        .reaction-popup.me-pill { background: var(--velvet-berry); }
-        .reaction-popup.them-pill { background: var(--her-berry); }
+        .reaction-popup { position: absolute; bottom: 15%; display: flex; flex-direction: row; align-items: center; padding: 8px 25px; border-radius: 50px; border: 2px solid var(--heart-red); pointer-events: none; z-index: 10015; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: androidFloat 3.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; backdrop-filter: blur(4px); gap: 12px; font-family: 'Poppins', 'Noto Color Emoji', sans-serif; }
+        .reaction-popup.me-pill { background: var(--velvet-berry); border-color: var(--heart-red); }
+        .reaction-popup.them-pill { background: var(--her-berry); border-color: var(--heart-red); }
         .inner-content { display: flex; flex-direction: row; align-items: center; gap: 12px; }
         .sender-tag { font-size: 0.55rem; color: rgba(255,255,255,0.7); font-weight: 800; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-family: 'Poppins'; text-transform: uppercase; }
-        .reaction-emoji { font-size: 2.5rem; display: inline-block; margin-top: 5px;} 
+        .reaction-emoji { font-size: 2.5rem; display: inline-block; margin-top: 5px; font-family: 'Noto Color Emoji', sans-serif;} 
         .reaction-text { color: white; font-size: 1.2rem; font-weight: 600; white-space: nowrap; font-family: 'Poppins', sans-serif; margin-top: 5px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);}
 
         #esc-hint { position: absolute; top: 40px; left: 50%; transform: translate(-50%, -50%); color: white; font-family: 'Poppins', sans-serif; text-transform: uppercase; font-weight: 600; font-size: 0.75rem; letter-spacing: 3px; background: rgba(0, 0, 0, 0.6); padding: 12px 35px; border-radius: 50px; border: 2.5px solid white; text-shadow: 0 2px 4px rgba(0,0,0,0.8); opacity: 0; pointer-events: none; transition: 1.2s; z-index: 1000; white-space: nowrap; backdrop-filter: blur(5px); }
@@ -296,6 +296,7 @@
             flex-direction: column;
             max-height: 85vh;
             overflow: hidden;
+            font-family: 'Poppins', 'Noto Color Emoji', sans-serif;
         }
 
         #romantic-movie-modal .romantic-title {
@@ -989,9 +990,19 @@
                 if (activeLine) { if (ghost.innerText !== activeLine.text.replace(/<br>/g, '\n')) { ghost.innerHTML = `<span>${activeLine.text}</span>`; } } else { ghost.innerHTML = ""; }
             };
 
-            // Listen for modalOpen state changes to sync modal closure across all users
+            // Listen for modalOpen state changes to sync modal across all users
             database.ref('rooms/' + roomID + '/modalOpen').on('value', snap => {
-                if (snap.val() === false) {
+                const isOpen = snap.val();
+                if (isOpen === true && !romanticModalOpen) {
+                    // Show modal if it's not already shown
+                    const modal = document.getElementById('romantic-movie-modal');
+                    if(modal) {
+                        romanticModalOpen = true;
+                        modal.style.display = 'flex';
+                        modal.setAttribute('aria-hidden', 'false');
+                    }
+                } else if (isOpen === false && romanticModalOpen) {
+                    // Hide modal if it's currently shown
                     hideRomanticMovieOverlay();
                 }
             });
@@ -1234,6 +1245,9 @@
             romanticModalOpen = true;
             modal.style.display = 'flex';
             modal.setAttribute('aria-hidden', 'false');
+            
+            // Sync modalOpen to true across all users
+            database.ref('rooms/' + roomID).update({ modalOpen: true });
 
             // Remember the exact playback state before opening the overlay.
             previousMomentState = {
