@@ -20,25 +20,196 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body, html {
-            height: 100vh; width: 100vw;
-            background: linear-gradient(135deg, var(--primary-pink), var(--deep-rose));
+            margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden;
             font-family: 'Poppins', sans-serif;
-            color: #4a4a4a; overflow: hidden;
+            background: linear-gradient(135deg, var(--primary-pink), var(--deep-rose));
         }
 
         /* 1. LOCK SCREEN (HIGHEST PRIORITY) */
-        #lock-screen, #setup-area {
+        #setup-area {
             position: fixed; top:0; left:0; width: 100%; height: 100%;
             background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url('https://www.transparenttextures.com/patterns/cuis-hearts.png');
             z-index: 999999999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .setup-box { background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center; width: 350px; border: 1px solid white; }
-        .romantic-title { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--heart-red); margin-bottom: 10px; }
-        input { padding: 12px; border: 2px solid var(--primary-pink); border-radius: 12px; outline: none; width: 100%; margin-bottom: 15px; font-family: 'Poppins', sans-serif; }
-        button { background: var(--heart-red); color: white; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; font-weight: 500; width: 100%; transition: 0.3s; font-family: 'Poppins', sans-serif; }
 
-        /* 2. MASTER GRID LAYOUT */
+        #lock-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000000000;
+            background: linear-gradient(135deg, var(--primary-pink), var(--deep-rose));
+        }
+
+        .bg-heart {
+            position: absolute; color: rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem; pointer-events: none;
+            animation: floatUp 7s linear infinite;
+            bottom: -50px;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Set-up Loader inside Connect-to-Me box */
+        #setup-loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 30px;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .setup-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 77, 109, 0.2);
+            border-top: 4px solid var(--heart-red);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .sync-text {
+            font-family: 'Dancing Script', cursive;
+            color: var(--heart-red);
+            font-size: 1.5rem;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        #setup-area {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-pink), var(--deep-rose));
+            overflow: hidden;
+            z-index: 999999999;
+        }
+
+        #setup-bg-elements {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+            background: linear-gradient(135deg, var(--primary-pink), var(--deep-rose));
+        }
+
+        #setup-bg-elements::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('https://www.transparenttextures.com/patterns/cuis-hearts.png');
+            opacity: 0.22;
+            pointer-events: none;
+        }
+
+        #setup-bg-elements div {
+            position: absolute;
+            bottom: -40px;
+            font-size: 22px;
+            color: var(--heart-red);
+            opacity: 0.85;
+            user-select: none;
+            pointer-events: none;
+            animation: setupHeartLift 5s linear forwards;
+            text-shadow: 0 0 7px rgba(255,255,255,0.8), 0 0 15px rgba(255,77,109,0.4);
+        }
+
+        @keyframes setupHeartLift {
+            0% { transform: translateY(0) scale(0.6); opacity: 0.4; }
+            100% { transform: translateY(-140vh) scale(1.2); opacity: 0; }
+        }
+
+        .setup-box {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 45px 35px;
+            border-radius: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            width: 392px; /* Adjusted for 320px input width */
+            border: 1px solid white;
+            position: relative;
+            z-index: 10;
+            /* CRITICAL FIX: Forces everything inside to center horizontally */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .setup-box.loading {
+            background: rgba(255, 255, 255, 1);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+        .setup-box.loading .romantic-title,
+        .setup-box.loading #nameInput,
+        .setup-box.loading #roomInput,
+        .setup-box.loading button {
+            display: none;
+        }
+
+        .romantic-title { font-family: 'Dancing Script', cursive; font-size: 2.3rem; color: var(--heart-red); margin-bottom: 15px; font-weight: 700; }
+        input { width: 100%; padding: 12px; border: 2px solid var(--primary-pink); border-radius: 15px; outline: none; font-family: 'Poppins', sans-serif; text-align: left; font-size: 1rem; transition: 0.3s; color: #444; background: white; margin-bottom: 15px; }
+        input:focus { border-color: var(--heart-red); box-shadow: 0 0 10px rgba(255, 77, 109, 0.1); }
+        button { background: var(--heart-red); color: white; border: none; padding: 14px; border-radius: 15px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s; font-family: 'Poppins', sans-serif; box-shadow: 0 8px 15px rgba(255, 77, 109, 0.2); }
+        button:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(255, 77, 109, 0.3); }
+
+        .heart-ornament {
+            color: var(--heart-red);
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            animation: pulse-heart 2s infinite;
+        }
+
+        @keyframes pulse-heart {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .romantic-quote {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #bbb;
+            margin-bottom: 35px;
+            font-weight: 500;
+        }
+
+        /* 3. CENTERED PASSWORD INPUT FIELD */
+        .input-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        /* Footer Text */
+        .footer-group {
+            margin-top: 25px;
+        }
+
+        .private-text {
+            font-size: 0.6rem;
+            color: #ccc;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2px;
+        }
+
+        .only-us {
+            font-family: 'Dancing Script', cursive;
+            color: var(--heart-red);
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
         #main-content {
             display: none; width: 100vw; height: 100vh; padding: 15px;
             display: grid; 
@@ -167,13 +338,14 @@
         #fs-message-popup.visible { display: block; opacity: 1; transform: translateX(0); }
 
         #presence-alert {
-            position: absolute; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px);
-            background: linear-gradient(135deg, #ff512f, #dd2476); color: white;
-            padding: 12px 35px; border-radius: 50px;
-            font-family: 'Dancing Script', cursive; font-size: 1.6rem; font-weight: 700;
-            border: 1px solid rgba(255, 255, 255, 0.4); box-shadow: 0 10px 30px rgba(221, 36, 118, 0.4);
-            z-index: 10025; opacity: 0; transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            pointer-events: none; text-align: center; white-space: nowrap; min-width: 320px;
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: var(--velvet-berry); color: white;
+            padding: 12px 28px; border-radius: 50px;
+            font-family: 'Dancing Script', cursive; font-size: 1.2rem; font-weight: 700;
+            border: 2px solid var(--heart-red); box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 3000000001; opacity: 0; transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none; text-align: center; white-space: wrap; min-width: 300px;
+            backdrop-filter: blur(4px); letter-spacing: 0.5px;
         }
         #presence-alert.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -208,7 +380,9 @@
 
         .controls-main { display: flex; align-items: center; gap: 20px; color: white; }
         .right-controls { margin-left: auto; display: flex; align-items: center; gap: 12px; }
-        .play-pause { cursor: pointer; font-size: 2.5rem; width: 35px; text-align: center; font-family: 'Poppins', sans-serif; font-weight: 600; }
+        .play-pause { cursor: pointer; width: 50px; height: 50px; background: var(--heart-red); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; border: none; padding: 0; }
+        .play-pause:hover { transform: scale(1.1); }
+        .play-pause svg { width: 28px; height: 28px; fill: white; }
         .time-display { font-size: 0.85rem; font-weight: 500; font-family: 'Poppins', sans-serif; min-width: 100px; }
         .seek-btn-svg { width: 30px; height: 30px; cursor: pointer; opacity: 0.85; transition: 0.2s; fill: white; margin: 0 2px; }
         
@@ -229,7 +403,32 @@
             color: white;
         }
         .player-btn:hover { transform: scale(1.1); opacity: 1; }
-        .player-btn svg { fill: currentColor; width: 20px; height: 20px; filter: drop-shadow(0 0 2px rgba(0,0,0,0.5)); }
+        .player-btn svg { fill: currentColor; width: 20px; height: 20px; filter: none; }
+
+        .control-icon-btn svg, .player-btn svg, .seek-overlay svg, .svg-icon-btn svg { filter: none !important; }
+
+        #playback-ripple {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0.3);
+            opacity: 0;
+            z-index: 10020;
+            background: rgba(255, 77, 109, 0.25);
+        }
+
+        #playback-ripple.active {
+            animation: playbackRipple 0.7s ease-out forwards;
+        }
+
+        @keyframes playbackRipple {
+            0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0.85; }
+            100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+        }
 
         #whisper-overlay { position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 500px; background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(15px); padding: 15px; border-radius: 25px; border: 2px solid rgba(255,255,255,0.5); z-index: 10035; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.5); pointer-events: auto; }
         #whisperInput { background: white; border: none; padding: 10px 20px; border-radius: 20px; width: 100%; outline: none; font-family: 'Poppins', sans-serif; }
@@ -254,6 +453,54 @@
         .react-btn { font-size: 1.5rem; cursor: pointer; transition: 0.2s; user-select: none; font-family: 'Noto Color Emoji', sans-serif; }
         .react-btn:hover { transform: scale(1.3); }
         .special-btn { width: auto; background: white; color: var(--heart-red); padding: 7px 15px; font-size: 0.7rem; border-radius: 10px; font-weight: 600; border: none; cursor: pointer; transition: 0.3s; font-family: 'Poppins', 'Noto Color Emoji', sans-serif; white-space: nowrap; }
+
+        /* SVG Icon Separator */
+        .reaction-bar-separator {
+            width: 2px; height: 35px; background: rgba(255, 255, 255, 0.3);
+            margin: 0 4px; border-radius: 2px;
+        }
+
+        /* SVG Icon Wrapper */
+        .svg-icon-wrapper {
+            display: flex; gap: 8px; align-items: center; margin-left: 8px;
+        }
+
+        /* SVG Icon Button */
+        .svg-icon-btn {
+            position: relative; cursor: pointer; padding: 6px;
+            background: none; border: none; display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+
+        .svg-icon-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .svg-icon-btn svg {
+            width: 28px; height: 28px; fill: var(--heart-red);
+        }
+
+        /* Save video state icon - make it bold */
+        .svg-icon-btn[data-tooltip="Save video state"] svg {
+            stroke: var(--heart-red);
+            stroke-width: 1.5;
+        }
+
+        /* Tooltip Styling */
+        .svg-icon-btn::after {
+            content: attr(data-tooltip); position: absolute; bottom: 100%; left: 50%;
+            transform: translateX(-50%) translateY(-8px);
+            background: var(--heart-red); color: white; padding: 8px 16px;
+            border-radius: 20px; font-family: 'Poppins', sans-serif; font-size: 0.75rem;
+            font-weight: 600; white-space: nowrap; z-index: 100000;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 77, 109, 0.4), 0 0 15px rgba(255, 77, 109, 0.2);
+            letter-spacing: 0.5px;
+        }
+
+        .svg-icon-btn:hover::after {
+            opacity: 1; transform: translateX(-50%) translateY(-12px);
+        }
 
         .reaction-popup { position: absolute; bottom: 15%; display: flex; flex-direction: row; align-items: center; padding: 8px 25px; border-radius: 50px; border: 2px solid var(--heart-red); pointer-events: none; z-index: 10015; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: androidFloat 3.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; backdrop-filter: blur(4px); gap: 12px; font-family: 'Poppins', 'Noto Color Emoji', sans-serif; }
         .reaction-popup.me-pill { background: var(--velvet-berry); border-color: var(--heart-red); }
@@ -557,14 +804,30 @@
 
     <div id="lock-screen">
         <div class="setup-box">
-            <div class="romantic-title">A Heart's Key ❤️</div>
-            <input type="password" id="passInput" placeholder="Password (150126)..." onkeypress="if(event.key==='Enter') checkPassword()">
+            <div class="heart-ornament">❤️</div>
+            <div class="romantic-title">A Heart's Key</div>
+            <div class="romantic-quote">Our Secret Sanctuary</div>
+            
+            <div class="input-container">
+                <input type="password" id="passInput" placeholder="••••••••" onkeypress="if(event.key==='Enter') checkPassword()">
+            </div>
+            
             <button onclick="checkPassword()">Unlock Our Space ❤️</button>
+            
+            <div class="footer-group">
+                <div class="private-text">Private Access</div>
+                <div class="only-us">Only for us...</div>
+            </div>
         </div>
     </div>
 
     <div id="setup-area" style="display: none;">
+        <div id="setup-bg-elements"></div>
         <div class="setup-box">
+            <div id="setup-loading">
+                <div class="setup-spinner"></div>
+                <div class="sync-text">Syncing our world... ❤️</div>
+            </div>
             <div class="romantic-title" style="font-size: 2.2rem;">Connect to Me</div>
             <input type="text" id="nameInput" placeholder="How should I call you?">
             <input type="text" id="roomInput" placeholder="Secret Room Code" onkeypress="if(event.key==='Enter') joinRoom()">
@@ -647,7 +910,13 @@
                         </div>
                         
                         <div class="controls-main">
-                            <div class="play-pause" id="playBtn" onclick="togglePlay()">▶</div>
+                        <button class="play-pause" id="playBtn" onclick="togglePlay()">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 163.861 163.861" style="enable-background:new 0 0 163.861 163.861;" xml:space="preserve">
+                                <g>
+                                    <path d="M34.857,3.613C20.084-4.861,8.107,2.081,8.107,19.106v125.637c0,17.042,11.977,23.975,26.75,15.509L144.67,97.275 c14.778-8.477,14.778-22.211,0-30.686L34.857,3.613z"/>
+                                </g>
+                            </svg>
+                        </button>
                             <div class="time-display"><span id="curTime">0:00</span> / <span id="durTime">0:00</span></div>
                             
                             <svg class="seek-btn-svg" onclick="seekManual(-10)" viewBox="0 0 512 512"><path d="m421.938 90.068c-77.266-77.261-196.126-88.942-286.495-34.968l1.557-8.657a21.337 21.337 0 0 0 -42-7.552l-11.385 63.286a21.342 21.342 0 0 0 14.25 24.016l55.3 18.437a21.335 21.335 0 0 0 13.5-40.479l-19.12-6.374c74.69-51.138 178.078-43.679 244.224 22.457 74.854 74.86 74.854 196.672 0 271.532-74.875 74.864-196.667 74.864-271.542 0a192.586 192.586 0 0 1 -44.125-203 21.334 21.334 0 1 0 -39.979-14.907 234.734 234.734 0 0 0 385.815 248.073c91.489-91.494 91.489-240.37 0-331.864z"/><path d="m192 362.667a21.334 21.334 0 0 0 21.333-21.334v-149.333a21.336 21.336 0 0 0 -32.312-18.292l-53.333 32a21.334 21.334 0 0 0 21.958 36.584l21.021-12.615v111.656a21.334 21.334 0 0 0 21.333 21.334z"/><path d="m309.333 362.667c41.865 0 74.667-42.167 74.667-96s-32.8-96-74.667-96-74.666 42.166-74.666 96 32.802 96 74.666 96zm0-149.334c15.136 0 32 21.9 32 53.334s-16.864 53.333-32 53.333-32-21.9-32-53.333 16.867-53.334 32-53.334z"/></svg>
@@ -701,7 +970,57 @@
                     <div class="react-btn" onclick="sendReaction('😱', 'OMG!', 'ani-pulse')">😱</div>
                     <div class="react-btn" onclick="sendReaction('✨', 'Video call!', 'ani-pop')">✨</div>
                     
-                    <button class="special-btn" style="background: var(--heart-red); color: white;" onclick="toggleWhisper()">Whisper 💬</button>
+                    <div class="reaction-bar-separator"></div>
+                    
+                    <div class="svg-icon-wrapper">
+                        <button class="svg-icon-btn" data-tooltip="Whisper" onclick="toggleWhisper()">
+                            <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-2008 -248)"><path d="m2018 298.832v8.168c0 .792.47 1.509 1.19 1.829s1.57.183 2.16-.349c0 0 2.97-2.702 5.82-5.297 2.96-2.692 6.82-4.183 10.82-4.183h22.01c3.18 0 6.24-1.264 8.49-3.514s3.51-5.302 3.51-8.484c0-6.108 0-21.002 0-21.002 0-1.104-.9-2-2-2s-2 .896-2 2v21.002c0 2.121-.84 4.156-2.34 5.655-1.5 1.5-3.54 2.343-5.66 2.343h-22.01c-4.99 0-9.81 1.862-13.51 5.223 0 0-2.48 2.257-2.48 2.257 0-2.152 0-4.423 0-5.2v-.28c0-1.105-.9-2-2-2-2.12 0-4.16-.843-5.66-2.343-1.5-1.499-2.34-3.534-2.34-5.655 0-6.109 0-17.895 0-24.004 0-2.121.84-4.156 2.34-5.655 1.5-1.5 3.54-2.343 5.66-2.343h37c1.1 0 2-.896 2-2s-.9-2-2-2h-37c-3.18 0-6.24 1.264-8.49 3.514s-3.51 5.302-3.51 8.484v24.004c0 3.182 1.26 6.234 3.51 8.484 1.78 1.773 4.05 2.934 6.49 3.346zm35.9-40.45c-.27-.824-1.03-1.382-1.9-1.382s-1.63.558-1.9 1.382l-2.63 8.087s-8.09 2.629-8.09 2.629c-.82.268-1.38 1.036-1.38 1.902s.56 1.634 1.38 1.902l8.09 2.629s2.63 8.087 2.63 8.087c.27.824 1.03 1.382 1.9 1.382s1.63-.558 1.9-1.382l2.63-8.087s8.09-2.629 8.09-2.629c.82-.268 1.38-1.036 1.38-1.902s-.56-1.634-1.38-1.902l-8.09-2.629s-2.63-8.087-2.63-8.087zm-31.9 26.618h24c1.1 0 2-.896 2-2s-.9-2-2-2h-24c-1.1 0-2 .896-2 2s.9 2 2 2zm0-8h14c1.1 0 2-.896 2-2s-.9-2-2-2h-14c-1.1 0-2 .896-2 2s.9 2 2 2zm30-11.532 1.04 3.206c.2.609.68 1.086 1.29 1.284l3.2 1.042s-3.2 1.042-3.2 1.042c-.61.198-1.09.675-1.29 1.284l-1.04 3.206s-1.04-3.206-1.04-3.206c-.2-.609-.68-1.086-1.29-1.284l-3.2-1.042s3.2-1.042 3.2-1.042c.61-.198 1.09-.675 1.29-1.284zm-30 3.532h14c1.1 0 2-.896 2-2s-.9-2-2-2h-14c-1.1 0-2 .896-2 2s.9 2 2 2zm44.9-16.618c-.27-.824-1.03-1.382-1.9-1.382s-1.63.558-1.9 1.382l-.91 2.804s-2.81.912-2.81.912c-.82.268-1.38 1.036-1.38 1.902s.56 1.634 1.38 1.902l2.81.912s.91 2.804.91 2.804c.27.824 1.03 1.382 1.9 1.382s1.63-.558 1.9-1.382l.91-2.804s2.81-.912 2.81-.912c.82-.268 1.38-1.036 1.38-1.902s-.56-1.634-1.38-1.902l-2.81-.912s-.91-2.804-.91-2.804z"/></g></svg>
+                        </button>
+                        <button class="svg-icon-btn" data-tooltip="Save video state" onclick="saveVideoState()">
+                            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+                                <g>
+                                    <g>
+                                        <path d="M509.071,109.679L402.321,2.929C400.445,1.054,397.902,0,395.25,0H50C22.43,0,0,22.43,0,50v412c0,27.57,22.43,50,50,50 h412c27.57,0,50-22.43,50-50V116.75C512,114.098,510.946,111.555,509.071,109.679z M411.507,492H100.493V324 c0-16.542,13.458-30,30-30h251.014c16.542,0,30,13.458,30,30V492z M492,462c0,16.542-13.458,30-30,30h-30.493V324 c0-27.57-22.43-50-50-50H130.493c-27.57,0-50,22.43-50,50v168H50c-16.542,0-30-13.458-30-30V50c0-16.542,13.458-30,30-30h57 v118.007c0,27.57,22.43,50,50,50h54.333c5.522,0,10-4.478,10-10c0-5.522-4.478-10-10-10H157c-16.542,0-30-13.458-30-30V20h258 v118.007c0,16.542-13.458,30-30,30h-56c-5.522,0-10,4.478-10,10c0,5.522,4.478,10,10,10h56c27.57,0,50-22.43,50-50V33.893l87,87 V462z"/>
+                                    </g>
+                                </g>
+                                <g>
+                                    <g>
+                                        <path d="M263.069,170.94c-1.859-1.871-4.439-2.93-7.069-2.93s-5.21,1.06-7.07,2.93c-1.86,1.86-2.93,4.431-2.93,7.07 c0,2.63,1.069,5.21,2.93,7.07c1.86,1.859,4.44,2.93,7.07,2.93s5.21-1.07,7.069-2.93c1.86-1.86,2.931-4.44,2.931-7.07 S264.93,172.8,263.069,170.94z"/>
+                                    </g>
+                                </g>
+                                <g>
+                                    <g>
+                                        <path d="M368,331H144c-5.522,0-10,4.478-10,10c0,5.522,4.478,10,10,10h224c5.522,0,10-4.478,10-10 C378,335.478,373.522,331,368,331z"/>
+                                    </g>
+                                </g>
+                                <g>
+                                    <g>
+                                        <path d="M368,383h-68c-5.522,0-10,4.478-10,10c0,5.522,4.478,10,10,10h68c5.522,0,10-4.478,10-10C378,387.478,373.522,383,368,383 z"/>
+                                    </g>
+                                </g>
+                                <g>
+                                    <g>
+                                        <path d="M256.565,383h-0.123c-5.522,0-10,4.478-10,10c0,5.522,4.478,10,10,10h0.123c5.522,0,10-4.478,10-10 C266.565,387.478,262.087,383,256.565,383z"/>
+                                    </g>
+                                </g>
+                                <g>
+                                    <g>
+                                        <path d="M212,383h-68c-5.522,0-10,4.478-10,10c0,5.522,4.478,10,10,10h68c5.522,0,10-4.478,10-10C222,387.478,217.522,383,212,383 z"/>
+                                    </g>
+                                </g>
+                                <g>
+                                    <g>
+                                        <path d="M368,435H144c-5.522,0-10,4.478-10,10c0,5.522,4.478,10,10,10h224c5.522,0,10-4.478,10-10 C378,439.478,373.522,435,368,435z"/>
+                                    </g>
+                                </g>
+                                <g>
+                                    <g>
+                                        <path d="M330.835,40.003h-15.67C300.737,40.003,289,51.74,289,66.168v55.67c0,14.428,11.737,26.165,26.165,26.165h15.67 c14.428,0,26.165-11.737,26.165-26.165v-55.67C357,51.74,345.263,40.003,330.835,40.003z M337,121.838 c0,3.399-2.766,6.165-6.165,6.165h-15.67c-3.399,0-6.165-2.766-6.165-6.165v-55.67c0-3.399,2.766-6.165,6.165-6.165h15.67 c3.399,0,6.165,2.766,6.165,6.165V121.838z"/>
+                                    </g>
+                                </g>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -772,30 +1091,112 @@
         let isReadyAnimShown = false; 
         let isChatHidden = false;
         let controlsTimeout;
+        let lastPersistSave = 0;
+        let initialChatLoadTime = Date.now();
 
-        function checkPassword() { if(document.getElementById('passInput').value === SECRET_PASSWORD) { document.getElementById('lock-screen').style.display='none'; document.getElementById('setup-area').style.display='flex'; } else alert("Wrong password! ❤️"); }
+        function checkPassword() { if(document.getElementById('passInput').value === SECRET_PASSWORD) { document.getElementById('lock-screen').style.display='none'; document.getElementById('setup-area').style.display='flex'; startBackgroundHearts(); } else alert("Wrong password! ❤️"); }
+
+        function spawnHearts() {
+            const container = document.getElementById('lock-screen');
+            const icons = ['❤️', '💖', '💗', '✨'];
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'bg-heart';
+                heart.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 0.8 + 1) + 'rem';
+                heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                heart.style.opacity = Math.random() * 0.6;
+                container.appendChild(heart);
+                setTimeout(() => heart.remove(), 7000);
+            }, 600);
+        }
+
+        let setupHeartInterval = null;
+        let backgroundHeartInterval = null;
+
+        function spawnSetupHeart() {
+            const wrapper = document.getElementById('setup-bg-elements');
+            if(!wrapper) return;
+            const heart = document.createElement('div');
+            heart.innerText = '❤️';
+            heart.style.left = Math.random() * 90 + 'vw';
+            heart.style.bottom = '-30px';
+            heart.style.fontSize = (Math.random() * 20 + 16) + 'px';
+            heart.style.opacity = (Math.random() * 0.35) + 0.55;
+            wrapper.appendChild(heart);
+            setTimeout(() => heart.remove(), 6200);
+        }
+
+        function startBackgroundHearts() {
+            if(backgroundHeartInterval) return;
+            backgroundHeartInterval = setInterval(() => spawnSetupHeart(), 800);
+        }
+
+        function stopBackgroundHearts() {
+            if(backgroundHeartInterval) {
+                clearInterval(backgroundHeartInterval);
+                backgroundHeartInterval = null;
+            }
+            document.getElementById('setup-bg-elements').innerHTML = '';
+        }
+
+        function toggleSetupLoader(show) {
+            const loading = document.getElementById('setup-loading');
+            const setupBox = document.querySelector('#setup-area .setup-box');
+            const inputs = [document.getElementById('nameInput'), document.getElementById('roomInput')];
+            const btn = document.querySelector('#setup-area button');
+            if(!loading) return;
+
+            if(show) {
+                if(setupBox) setupBox.classList.add('loading');
+                if(setupHeartInterval) clearInterval(setupHeartInterval);
+                for (let i = 0; i < 3; i++) spawnSetupHeart();
+                setupHeartInterval = setInterval(() => { for (let i = 0; i < 3; i++) spawnSetupHeart(); }, 180);
+            } else {
+                if(setupBox) setupBox.classList.remove('loading');
+                if(setupHeartInterval) { clearInterval(setupHeartInterval); setupHeartInterval = null; }
+                document.getElementById('setup-bg-elements').innerHTML = '';
+            }
+
+            loading.style.display = show ? 'flex' : 'none';
+            inputs.forEach(i => { if(i) i.disabled = show; });
+            if(btn) btn.disabled = show;
+        }
+
         function joinRoom() { 
             roomID = document.getElementById("roomInput").value; 
             myName = document.getElementById("nameInput").value; 
             if (!roomID || !myName) return alert("Fill everything!"); 
+
+            toggleSetupLoader(true);
             
             const stored = JSON.parse(localStorage.getItem('cinema_session_' + roomID));
-            if(stored && stored.name === myName) {
-                mySymbol = stored.symbol; 
-                showRomanticMovieOverlay();
+            const enterRoom = (symbol) => {
+                mySymbol = symbol;
+                initialChatLoadTime = Date.now();
+                // Don't show modal here - wait until room is fully loaded
                 startSession();
+            };
+            
+            if(stored && stored.name === myName) {
+                enterRoom(stored.symbol);
             } else {
                 database.ref('rooms/' + roomID).once('value').then(snap => { 
                     const d = snap.val(); 
-                    if (d && d.playerX === myName) mySymbol = 'X';
-                    else if (d && d.playerO === myName) mySymbol = 'O';
-                    else if (!d || !d.playerX || d.playerX === "Waiting...") mySymbol = 'X';
-                    else if (!d.playerO || d.playerO === "Waiting...") mySymbol = 'O';
-                    else { alert("Room is full! ❤️"); return; } 
+                    let symbol;
+                    if (d && d.playerX === myName) symbol = 'X';
+                    else if (d && d.playerO === myName) symbol = 'O';
+                    else if (!d || !d.playerX || d.playerX === "Waiting...") symbol = 'X';
+                    else if (!d || !d.playerO || d.playerO === "Waiting...") symbol = 'O';
+                    else { toggleSetupLoader(false); alert("Room is full! ❤️"); return; } 
 
-                    localStorage.setItem('cinema_session_' + roomID, JSON.stringify({ name: myName, symbol: mySymbol }));
-                    showRomanticMovieOverlay();
-                    startSession();
+                    localStorage.setItem('cinema_session_' + roomID, JSON.stringify({ name: myName, symbol: symbol }));
+                    enterRoom(symbol);
+                }).catch(err => {
+                    console.error('Failed to load room info:', err);
+                    toggleSetupLoader(false);
+                    alert('Could not connect to the room. Please try again.');
                 }); 
             }
         }
@@ -811,16 +1212,68 @@
                 }
             });
 
-            database.ref('rooms/' + roomID).once('value').then(snap => {
-                const d = snap.val();
-                if(!d) database.ref('rooms/' + roomID).update({ playerX: myName, playerO: "Waiting...", loadingX: false, loadingO: false, videoSrc: "", subtitleSrc: "", modalOpen: true }); 
-                else if(d['player' + mySymbol] !== myName) database.ref('rooms/' + roomID).update({ ['player' + mySymbol]: myName }); 
-                if(d && d.modalOpen === undefined) database.ref('rooms/' + roomID).update({ modalOpen: true });
-            });
+            // Pre-load existing data before starting full session
+            Promise.all([
+                // Load room data (player names)
+                database.ref('rooms/' + roomID).once('value').then(snap => {
+                    const d = snap.val();
+                    if(!d) database.ref('rooms/' + roomID).update({ playerX: myName, playerO: "Waiting...", loadingX: false, loadingO: false, videoSrc: "", subtitleSrc: "", modalOpen: true }); 
+                    else if(d['player' + mySymbol] !== myName) database.ref('rooms/' + roomID).update({ ['player' + mySymbol]: myName }); 
+                    if(d && d.modalOpen === undefined) database.ref('rooms/' + roomID).update({ modalOpen: true });
+                }),
+                // Load existing chat messages
+                database.ref('rooms/'+roomID+'/messages').once('value').then(snap => {
+                    const messages = snap.val();
+                    if (messages) {
+                        Object.values(messages).sort((a, b) => a.time - b.time).forEach(m => {
+                            const div = document.createElement("div");
+                            div.className = `msg ${m.sender === myName ? 'me' : 'them'}`;
+                            div.innerHTML = `<div style="font-size:0.6rem; font-weight:bold;">${m.sender===myName?'You':m.sender}</div>${m.text}`;
+                            document.getElementById("chat-messages").appendChild(div);
+                        });
+                        document.getElementById("chat-messages").scrollTop = document.getElementById("chat-messages").scrollHeight;
+                    }
+                })
+            ]).then(() => {
+                // Hide the local setup loader before entering the room
+                toggleSetupLoader(false);
 
-            document.getElementById("setup-area").style.display = "none"; 
-            document.getElementById("main-content").style.display = "grid"; 
-            listenForChat(); listenForTyping(); initCinemaSync();
+                // Stop background hearts
+                stopBackgroundHearts();
+
+                // After data is loaded, start listening for real-time updates
+                document.getElementById("setup-area").style.display = "none"; 
+                document.getElementById("main-content").style.display = "grid"; 
+                
+                // Show welcome notification for the user who just joined
+                const alertBox = document.getElementById('presence-alert');
+                const welcomeMsg = `Our screen, our story... welcome home, ${myName}. 💖`;
+                alertBox.innerText = welcomeMsg;
+                alertBox.classList.add('show');
+                setTimeout(() => alertBox.classList.remove('show'), 5000);
+                
+                // Play welcome sound
+                playSound('user-joined.mp3');
+                
+                // Show fullscreen indicator if needed
+                if(document.fullscreenElement || isChatHidden) {
+                    const fsInd = document.getElementById('fs-typing-indicator');
+                    fsInd.innerHTML = `🔔 ${welcomeMsg}`;
+                    fsInd.classList.add('visible');
+                    setTimeout(() => fsInd.classList.remove('visible'), 5000);
+                }
+                
+                // Now show the movie selection modal
+                showRomanticMovieOverlay();
+                
+                listenForChat(); 
+                listenForTyping(); 
+                initCinemaSync();
+            }).catch(err => {
+                console.error('Failed during startup:', err);
+                toggleSetupLoader(false);
+                alert('Unable to start the session. Please refresh and try again.');
+            });
         }
 
         function toggleChat() {
@@ -868,6 +1321,12 @@
             const cinemaRef = database.ref('rooms/' + roomID + '/cinema');
             let lastOnlineState = false;
             let isFirstLoad = true;
+            let hasProcessedFirstNotification = false;
+
+            database.ref('rooms/' + roomID + '/lastPlayback').on('value', snap => {
+                const d = snap.val();
+                if (d && d.videoSrc) persistedMoment = d;
+            });
 
             database.ref('rooms/' + roomID).on('value', snap => {
                 const d = snap.val(); if(!d) return;
@@ -876,7 +1335,7 @@
                 const isPartnerOnline = (d.online && d.online[partnerSymbol]);
                 
                 const rawName = (partnerSymbol === 'O' ? d.playerO : d.playerX);
-                partnerName = (rawName === "Waiting...") ? "Partner" : rawName;
+                partnerName = (rawName === "Waiting..." || !rawName) ? "Partner" : rawName;
                 
                 const statusEl = document.getElementById('status-text');
                 if(isPartnerOnline && rawName !== "Waiting...") {
@@ -885,20 +1344,79 @@
                     statusEl.innerText = "Waiting for connection... ✨";
                 }
 
-                if(rawName !== "Waiting...") {
+                // Only proceed with notifications if we have a valid partner name
+                if(rawName && rawName !== "Waiting...") {
+                    // Show notifications on first load if partner is already online
+                    // This only applies to the second user (O) joining and finding first user already here
+                    if (isFirstLoad && isPartnerOnline && !hasProcessedFirstNotification && mySymbol === 'O') {
+                        hasProcessedFirstNotification = true;
+                        const alertBox = document.getElementById('presence-alert');
+                        let initialMsg = `Our screen, our story... welcome home, ${myName}. 💖`;
+                        
+                        alertBox.innerText = initialMsg;
+                        alertBox.classList.add('show');
+                        setTimeout(() => alertBox.classList.remove('show'), 5000);
+                        
+                        playSound('user-joined.mp3');
+                        
+                        if(isChatHidden || document.fullscreenElement) {
+                            const fsInd = document.getElementById('fs-typing-indicator');
+                            fsInd.innerHTML = `🔔 ${initialMsg}`;
+                            fsInd.classList.add('visible');
+                            setTimeout(() => fsInd.classList.remove('visible'), 5000);
+                        }
+                        
+                        // Queue second notification for the joining user
+                        const capturedPartnerName = rawName;
+                        setTimeout(() => {
+                            alertBox.innerText = `${capturedPartnerName} is already here... 💖`;
+                            alertBox.classList.remove('show');
+                            void alertBox.offsetWidth; // Trigger reflow
+                            alertBox.classList.add('show');
+                            setTimeout(() => alertBox.classList.remove('show'), 5000);
+                            
+                            playSound('user-joined.mp3');
+                            
+                            if(isChatHidden || document.fullscreenElement) {
+                                const fsInd = document.getElementById('fs-typing-indicator');
+                                fsInd.innerHTML = `🔔 ${capturedPartnerName} is already here... 💖`;
+                                fsInd.classList.add('visible');
+                                setTimeout(() => fsInd.classList.remove('visible'), 5000);
+                            }
+                        }, 5000);
+                    }
+                    
                     const alertBox = document.getElementById('presence-alert');
                     let showNotif = false;
                     let msg = "";
+                    let showSecondNotif = false;
+                    let secondMsg = "";
 
                     if (isPartnerOnline) {
-                        if (!lastOnlineState) {
-                            msg = `${partnerName} is here! My heart is beating faster. 💓`;
+                        if (!lastOnlineState && !isFirstLoad) {
+                            // Partner just came online (not on first load)
+                            // Use the actual name from database
+                            if (mySymbol === 'X') {
+                                // First user (X) sees partner joined message only - no second notification
+                                msg = `${rawName} joined the room... 💖`;
+                            } else {
+                                // Second user (O) sees welcome message
+                                msg = `Our screen, our story... welcome home, ${myName}. 💖`;
+                            }
+                            // Only second user gets a second notification
+                            if (mySymbol === 'O') {
+                                showSecondNotif = true;
+                                secondMsg = `${rawName} is already here... 💖`;
+                            }
+                            
                             showNotif = true;
+                            playSound('user-joined.mp3');
                         }
                     } else {
-                        if (lastOnlineState === true) {
+                        if (lastOnlineState === true && !isFirstLoad) {
                             msg = `The room feels empty without you, ${partnerName}... come back soon. 🥀`;
                             showNotif = true;
+                            playSound('user-disconnected.mp3');
                         }
                     }
 
@@ -913,8 +1431,35 @@
                              fsInd.classList.add('visible');
                              setTimeout(() => fsInd.classList.remove('visible'), 5000);
                         }
+                        
+                        // Show second notification after first one completes
+                        if(showSecondNotif) {
+                            const capturedSecondMsg = secondMsg;
+                            setTimeout(() => {
+                                alertBox.innerText = capturedSecondMsg;
+                                alertBox.classList.remove('show');
+                                void alertBox.offsetWidth; // Trigger reflow
+                                alertBox.classList.add('show');
+                                setTimeout(() => alertBox.classList.remove('show'), 5000);
+                                
+                                // Play sound for second notification
+                                playSound('user-joined.mp3');
+                                
+                                if(isChatHidden || document.fullscreenElement) {
+                                    const fsInd = document.getElementById('fs-typing-indicator');
+                                    fsInd.innerHTML = `🔔 ${capturedSecondMsg}`;
+                                    fsInd.classList.add('visible');
+                                    setTimeout(() => fsInd.classList.remove('visible'), 5000);
+                                }
+                            }, 5000);
+                        }
                     }
                     lastOnlineState = !!isPartnerOnline; 
+                }
+                
+                // Mark that we've processed the first load
+                if (isFirstLoad) {
+                    isFirstLoad = false;
                 }
 
                 const isEmpty = !d.videoSrc || d.videoSrc === "";
@@ -978,15 +1523,20 @@
             
             video.onerror = () => { loader.style.display = 'none'; };
             video.onloadedmetadata = () => { document.getElementById('durTime').innerText = formatTime(video.duration); };
-            video.addEventListener('play', () => { if(!isRemoteChange) cinemaRef.update({ state: 'play', time: video.currentTime, user: mySymbol }); playBtn.innerText = '⏸'; });
-            video.addEventListener('pause', () => { if(!isRemoteChange) cinemaRef.update({ state: 'pause', time: video.currentTime, user: mySymbol }); playBtn.innerText = '▶'; });
+            video.addEventListener('play', () => { if(!isRemoteChange) cinemaRef.update({ state: 'play', time: video.currentTime, user: mySymbol }); updatePlayButton(true); persistPlaybackState(); });
+            video.addEventListener('pause', () => { if(!isRemoteChange) cinemaRef.update({ state: 'pause', time: video.currentTime, user: mySymbol }); updatePlayButton(false); persistPlaybackState(); });
             
             video.ontimeupdate = () => { 
                 if (!isRemoteChange && !isDragging) { 
                     pBar.style.width = (video.currentTime / video.duration) * 100 + "%"; 
                     document.getElementById('curTime').innerText = formatTime(video.currentTime); 
                 }
-                const now = video.currentTime; const activeLine = subtitleData.find(s => now >= s.start && now <= s.end); const ghost = document.getElementById('subtitle-ghost');
+                const now = Date.now();
+                if (now - lastPersistSave > 10000) { persistPlaybackState(); lastPersistSave = now; }
+
+                const nowSec = video.currentTime;
+                const activeLine = subtitleData.find(s => nowSec >= s.start && nowSec <= s.end);
+                const ghost = document.getElementById('subtitle-ghost');
                 if (activeLine) { if (ghost.innerText !== activeLine.text.replace(/<br>/g, '\n')) { ghost.innerHTML = `<span>${activeLine.text}</span>`; } } else { ghost.innerHTML = ""; }
             };
 
@@ -1024,6 +1574,18 @@
         }
 
         function formatTime(t) { if(isNaN(t) || t === Infinity) return "0:00"; let h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), s = Math.floor(t % 60); return h > 0 ? `${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}` : `${m}:${s < 10 ? '0' : ''}${s}`; }
+        function playSound(src) { 
+            try {
+                const audio = new Audio(src); 
+                audio.volume = 0.32;
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(err => console.log('Audio play error:', err));
+                }
+            } catch (e) {
+                console.log('Sound error:', e);
+            }
+        }
         function togglePlay() { if(video.paused) video.play(); else video.pause(); }
         function seekManual(sec) { let newTime = video.currentTime + sec; if (newTime < 0) newTime = 0; if (newTime > video.duration) newTime = video.duration; video.currentTime = newTime; const act = sec > 0 ? 'right' : 'left'; triggerSeekVisual(act); database.ref('rooms/' + roomID + '/cinema').update({ state: video.paused ? 'pause' : 'play', time: video.currentTime, user: mySymbol, seekAction: act, seekNonce: Math.random() }); }
         function triggerSeekVisual(dir) { const el = document.getElementById('seek-' + dir); el.classList.remove('seek-animate'); void el.offsetWidth; el.classList.add('seek-animate'); }
@@ -1097,6 +1659,10 @@
             
             showControls();
         });
+
+        // Save the current playback to Firebase when the user leaves or closes the page.
+        window.addEventListener('beforeunload', persistPlaybackState);
+        window.addEventListener('pagehide', persistPlaybackState);
         
         function seekVideo(e) { 
             if(!isDragging) { 
@@ -1131,6 +1697,11 @@
                 div.innerHTML = `<div style="font-size:0.6rem; font-weight:bold;">${m.sender===myName?'You':m.sender}</div>${m.text}`; 
                 document.getElementById("chat-messages").appendChild(div); 
                 document.getElementById("chat-messages").scrollTop = document.getElementById("chat-messages").scrollHeight; 
+                
+                // Only play sound for NEW messages (sent AFTER we joined the room)
+                if (m.sender !== myName && m.time > initialChatLoadTime) {
+                    playSound('message-received.mp3');
+                }
                 
                 if (m.sender !== myName && (Date.now() - m.time < 5000)) { 
                     if (document.fullscreenElement || isChatHidden) { 
@@ -1187,6 +1758,55 @@
         let romanticAllMovies = [];
         let romanticModalOpen = false;
         let previousMomentState = null;
+        let persistedMoment = null;  // loads from DB on join
+
+        function persistPlaybackState() {
+            if (!roomID || !video || !video.src) return;
+            const currentSrc = video.currentSrc || video.src;
+            if (!currentSrc) return;
+
+            const payload = {
+                videoSrc: currentSrc,
+                time: (typeof video.currentTime === 'number' && !isNaN(video.currentTime)) ? video.currentTime : 0,
+                state: video.paused ? 'pause' : 'play',
+                updatedAt: Date.now(),
+                savedBy: myName || ""
+            };
+
+            database.ref('rooms/' + roomID + '/lastPlayback').set(payload).catch(() => {});
+        }
+
+        function saveVideoState() {
+            if (!roomID || !video || !video.src) {
+                alert('No video is currently playing!');
+                return;
+            }
+            
+            const currentSrc = video.currentSrc || video.src;
+            if (!currentSrc) {
+                alert('No video source found!');
+                return;
+            }
+
+            const payload = {
+                videoSrc: currentSrc,
+                timestamp: (typeof video.currentTime === 'number' && !isNaN(video.currentTime)) ? video.currentTime : 0,
+                savedAt: Date.now(),
+                savedBy: myName || "Anonymous"
+            };
+
+            // Save to database, discarding any previous save
+            database.ref('rooms/' + roomID + '/savedVideoState').set(payload).then(() => {
+                // Show feedback
+                const notification = document.createElement('div');
+                notification.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--heart-red);color:white;padding:15px 25px;border-radius:25px;font-family:Poppins;font-weight:600;z-index:10100;box-shadow:0 10px 30px rgba(0,0,0,0.3);animation:popIn 0.4s ease;';
+                notification.textContent = `💾 Saved! Ready to continue at ${video.currentTime.toFixed(1)}s`;
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 3000);
+            }).catch((err) => {
+                alert('Failed to save: ' + (err.message || 'Unknown error'));
+            });
+        }
 
         function setVideoSrcByUrl(url) {
             subtitleData = [];
@@ -1200,42 +1820,119 @@
                 loadingX: true,
                 loadingO: true
             });
+            // persist selected video immediately
+            database.ref('rooms/' + roomID + '/lastPlayback').set({
+                videoSrc: url,
+                time: 0,
+                state: 'pause',
+                updatedAt: Date.now(),
+                savedBy: myName || ""
+            }).catch(() => {});
         }
 
         function continueOurMoment() {
-            const restore = previousMomentState;
-            database.ref('rooms/' + roomID).update({ modalOpen: false });
-            hideRomanticMovieOverlay();
-
-            if(!restore || !restore.videoSrc) return;
-
-            const doRestore = () => {
-                try {
-                    if(typeof restore.time === 'number' && isFinite(restore.time)) video.currentTime = restore.time;
-                } catch (e) {}
-
-                if(restore.state === 'play') {
-                    video.play().catch(() => {});
+            // First check for savedVideoState, otherwise use persistedMoment or previousMomentState
+            database.ref('rooms/' + roomID + '/savedVideoState').once('value').then(savedSnap => {
+                let restore = null;
+                
+                if(savedSnap.exists()) {
+                    restore = savedSnap.val();
                 } else {
-                    video.pause();
+                    restore = persistedMoment || previousMomentState;
                 }
+                
+                database.ref('rooms/' + roomID).update({ modalOpen: false });
+                hideRomanticMovieOverlay();
 
-                database.ref('rooms/' + roomID + '/cinema').update({
-                    state: restore.state,
-                    time: restore.time,
-                    user: mySymbol
-                });
-            };
+                if(!restore || !restore.videoSrc) return;
 
-            const currentSrc = video.currentSrc || video.src || "";
-            if(currentSrc && currentSrc !== restore.videoSrc) {
-                // Return to the moment's video.
-                setVideoSrcByUrl(restore.videoSrc);
-                setTimeout(doRestore, 1200);
-            } else {
-                if(video.readyState >= 2) doRestore();
-                else setTimeout(doRestore, 800);
-            }
+                const doRestore = () => {
+                    // Seek to the saved timestamp - wait for video to be fully loaded
+                    const seekTimeout = setTimeout(() => {
+                        if (typeof restore.timestamp === 'number' && isFinite(restore.timestamp)) {
+                            try { video.currentTime = restore.timestamp; } catch (e) {}
+                        } else if (typeof restore.time === 'number' && isFinite(restore.time)) {
+                            try { video.currentTime = restore.time; } catch (e) {}
+                        }
+                    }, 100);
+
+                    if(restore.state === 'play') {
+                        video.play().catch(() => {});
+                    } else {
+                        video.pause();
+                    }
+
+                    database.ref('rooms/' + roomID + '/cinema').update({
+                        state: restore.state || 'pause',
+                        time: restore.timestamp || restore.time || 0,
+                        user: mySymbol
+                    });
+
+                    // Also save this moment as the latest persisted moment in DB
+                    persistPlaybackState();
+                };
+
+                const currentSrc = video.currentSrc || video.src || "";
+                if(currentSrc && currentSrc !== restore.videoSrc) {
+                    setVideoSrcByUrl(restore.videoSrc);
+                    // Wait for video to be loaded before seeking
+                    video.oncanplay = () => {
+                        video.oncanplay = null;
+                        doRestore();
+                    };
+                    // Fallback if oncanplay doesn't trigger
+                    setTimeout(() => {
+                        if(video.readyState >= 2) doRestore();
+                    }, 2000);
+                } else {
+                    if(video.readyState >= 2) doRestore();
+                    else {
+                        video.oncanplay = () => { 
+                            video.oncanplay = null; 
+                            doRestore(); 
+                        };
+                    }
+                }
+            }).catch(() => {
+                // Fallback if database query fails
+                const restore = persistedMoment || previousMomentState;
+                database.ref('rooms/' + roomID).update({ modalOpen: false });
+                hideRomanticMovieOverlay();
+
+                if(!restore || !restore.videoSrc) return;
+
+                const doRestore = () => {
+                    if (typeof restore.time === 'number' && isFinite(restore.time)) {
+                        try { video.currentTime = restore.time; } catch (e) {}
+                    }
+
+                    if(restore.state === 'play') {
+                        video.play().catch(() => {});
+                    } else {
+                        video.pause();
+                    }
+
+                    database.ref('rooms/' + roomID + '/cinema').update({
+                        state: restore.state,
+                        time: restore.time,
+                        user: mySymbol
+                    });
+
+                    persistPlaybackState();
+                };
+
+                const currentSrc = video.currentSrc || video.src || "";
+                if(currentSrc && currentSrc !== restore.videoSrc) {
+                    setVideoSrcByUrl(restore.videoSrc);
+                    video.oncanplay = () => {
+                        video.oncanplay = null;
+                        doRestore();
+                    };
+                } else {
+                    if(video.readyState >= 2) doRestore();
+                    else video.oncanplay = () => { video.oncanplay = null; doRestore(); };
+                }
+            });
         }
 
         function showRomanticMovieOverlay() {
@@ -1396,6 +2093,16 @@
                 hideRomanticMovieOverlay();
             }
         }
+
+        function updatePlayButton(isPlaying) {
+            const pauseSVG = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><g id="a98320b4-c804-49e8-bb64-e76768f68178" data-name="Layer 30"><path d="m13 5v22a3 3 0 0 1 -3 3h-1a3 3 0 0 1 -3-3v-22a3 3 0 0 1 3-3h1a3 3 0 0 1 3 3zm10-3h-1a3 3 0 0 0 -3 3v22a3 3 0 0 0 3 3h1a3 3 0 0 0 3-3v-22a3 3 0 0 0 -3-3z"/></g></svg>';
+            const playSVG = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 163.861 163.861" style="enable-background:new 0 0 163.861 163.861;" xml:space="preserve"><g><path d="M34.857,3.613C20.084-4.861,8.107,2.081,8.107,19.106v125.637c0,17.042,11.977,23.975,26.75,15.509L144.67,97.275 c14.778-8.477,14.778-22.211,0-30.686L34.857,3.613z"/></g></svg>';
+            playBtn.innerHTML = isPlaying ? pauseSVG : playSVG;
+        }
+
+        spawnHearts();
+        // Initialize play button with play icon
+        setTimeout(() => { updatePlayButton(false); }, 100);
     </script>
 </body>
 </html>
