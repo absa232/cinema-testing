@@ -198,7 +198,7 @@
 
         .private-text {
             font-size: 0.6rem;
-            color: #ccc;
+            color: #999;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 2px;
@@ -248,9 +248,22 @@
 
         #chat-header { height: 60px; display: flex; align-items: center; justify-content: center; background: white; font-family: 'Dancing Script'; font-size: 1.5rem; color: var(--heart-red); border-bottom: 1px solid #eee; flex-shrink: 0; }
         #chat-messages { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-        .msg { font-family: 'Poppins', sans-serif; padding: 10px 15px; border-radius: 18px; font-size: 0.85rem; max-width: 85%; overflow-wrap: break-word; line-height: 1.4; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .msg { position: relative; font-family: 'Poppins', sans-serif; padding: 12px 15px 26px; border-radius: 18px; font-size: 0.85rem; max-width: 85%; min-width: 70px; overflow-wrap: break-word; line-height: 1.4; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
         .msg.me { align-self: flex-end; background: var(--heart-red); color: white; border-bottom-right-radius: 2px; }
         .msg.them { align-self: flex-start; background: white; color: #444; border-bottom-left-radius: 2px; border: 1px solid #ffe1e6; }
+
+        .msg-time { position: absolute; right: 10px; bottom: 6px; font-size: 0.68rem; line-height: 1; opacity: 0.95; }
+        .msg.me .msg-time { color: #ffe1ec; text-shadow: 0 0 3px rgba(0,0,0,0.3); }
+        .msg.them .msg-time { color: #888; }
+
+        .date-separator {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #666;
+            margin: 10px 0;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+        }
         
         #typing-indicator { 
             height: 25px; padding: 0 15px; 
@@ -382,7 +395,7 @@
         .right-controls { margin-left: auto; display: flex; align-items: center; gap: 12px; }
         .play-pause { cursor: pointer; width: 50px; height: 50px; background: var(--heart-red); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; border: none; padding: 0; }
         .play-pause:hover { transform: scale(1.1); }
-        .play-pause svg { width: 28px; height: 28px; fill: white; }
+        .play-pause svg { width: 28px; height: 28px; fill: white; transform: translateX(1px); }
         .time-display { font-size: 0.85rem; font-weight: 500; font-family: 'Poppins', sans-serif; min-width: 100px; }
         .seek-btn-svg { width: 30px; height: 30px; cursor: pointer; opacity: 0.85; transition: 0.2s; fill: white; margin: 0 2px; }
         
@@ -415,10 +428,19 @@
             height: 80px;
             border-radius: 50%;
             pointer-events: none;
-            transform: translate(-50%, -50%) scale(0.3);
+            transform: translate(-50%, -50%) scale(0.5);
             opacity: 0;
             z-index: 10020;
-            background: rgba(255, 77, 109, 0.25);
+            background: rgba(255, 77, 109, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #playback-ripple svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
         }
 
         #playback-ripple.active {
@@ -426,8 +448,8 @@
         }
 
         @keyframes playbackRipple {
-            0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0.85; }
-            100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1.0; }
+            100% { transform: translate(-50%, -50%) scale(2.0); opacity: 0; }
         }
 
         #whisper-overlay { position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 500px; background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(15px); padding: 15px; border-radius: 25px; border: 2px solid rgba(255,255,255,0.5); z-index: 10035; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.5); pointer-events: auto; }
@@ -449,20 +471,20 @@
         .petal { position: absolute; border-radius: 150% 0 150% 0; width: 15px; height: 15px; pointer-events: none; z-index: 10002; animation: petalFall linear forwards; }
         @keyframes petalFall { 0% { transform: translateY(-20px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
 
-        .reaction-bar { min-height: 70px; background: var(--velvet-berry); border-radius: 40px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 2px solid white; flex-wrap: nowrap; padding: 5px 12px; flex-shrink: 0; z-index: 100; font-family: 'Poppins', 'Noto Color Emoji', sans-serif; }
-        .react-btn { font-size: 1.5rem; cursor: pointer; transition: 0.2s; user-select: none; font-family: 'Noto Color Emoji', sans-serif; }
+        .reaction-bar { min-height: 70px; background: var(--velvet-berry); border-radius: 40px; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px; border: 2px solid white; flex-wrap: nowrap; padding: 5px 12px; flex-shrink: 0; z-index: 100; font-family: 'Poppins', 'Noto Color Emoji', sans-serif; }
+        .react-btn { font-size: 1.4rem; cursor: pointer; transition: 0.2s; user-select: none; font-family: 'Noto Color Emoji', sans-serif; }
         .react-btn:hover { transform: scale(1.3); }
         .special-btn { width: auto; background: white; color: var(--heart-red); padding: 7px 15px; font-size: 0.7rem; border-radius: 10px; font-weight: 600; border: none; cursor: pointer; transition: 0.3s; font-family: 'Poppins', 'Noto Color Emoji', sans-serif; white-space: nowrap; }
 
         /* SVG Icon Separator */
         .reaction-bar-separator {
-            width: 2px; height: 35px; background: rgba(255, 255, 255, 0.3);
-            margin: 0 4px; border-radius: 2px;
+            width: 3px; height: 20px; background: rgba(255, 255, 255, 0.85);
+            margin: 0 2px; border-radius: 2px;
         }
 
         /* SVG Icon Wrapper */
         .svg-icon-wrapper {
-            display: flex; gap: 8px; align-items: center; margin-left: 8px;
+            display: flex; gap: 6px; align-items: center;
         }
 
         /* SVG Icon Button */
@@ -470,17 +492,27 @@
             position: relative; cursor: pointer; padding: 6px;
             background: none; border: none; display: flex; align-items: center; justify-content: center;
             transition: transform 0.2s ease, filter 0.2s ease;
+            box-shadow: none; /* remove glow */
         }
 
         .svg-icon-btn:hover {
             transform: scale(1.15);
+            box-shadow: none;
         }
 
         .svg-icon-btn svg {
-            width: 28px; height: 28px; fill: var(--heart-red);
+            width: 1.4rem; height: 1.4rem;
+            fill: var(--heart-red); stroke: var(--heart-red); filter: none;
         }
 
-        /* Save video state icon - make it bold */
+        .svg-icon-btn[data-tooltip="Save video state"] svg,
+        .svg-icon-btn[data-tooltip="Save movie state"] svg {
+            stroke: var(--heart-red);
+            fill: var(--heart-red);
+            stroke-width: 1.5;
+        }
+
+        /* Save movie state icon */
         .svg-icon-btn[data-tooltip="Save video state"] svg {
             stroke: var(--heart-red);
             stroke-width: 1.5;
@@ -490,16 +522,32 @@
         .svg-icon-btn::after {
             content: attr(data-tooltip); position: absolute; bottom: 100%; left: 50%;
             transform: translateX(-50%) translateY(-8px);
-            background: var(--heart-red); color: white; padding: 8px 16px;
-            border-radius: 20px; font-family: 'Poppins', sans-serif; font-size: 0.75rem;
+            background: var(--heart-red); color: white; padding: 6px 10px;
+            border-radius: 18px; font-family: 'Poppins', sans-serif; font-size: 0.65rem;
             font-weight: 600; white-space: nowrap; z-index: 100000;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0; pointer-events: none; transition: opacity 0.24s ease, transform 0.24s ease;
             box-shadow: 0 4px 12px rgba(255, 77, 109, 0.4), 0 0 15px rgba(255, 77, 109, 0.2);
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
 
         .svg-icon-btn:hover::after {
             opacity: 1; transform: translateX(-50%) translateY(-12px);
+        }
+
+        /* Save state animated pop-up */
+        .save-state-notif {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.96);
+            background: rgba(100, 10, 35, 1.0); color: white;
+            border: 1px solid rgba(255, 77, 109, 0.4);
+            border-radius: 18px; padding: 12px 18px;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35); z-index: 10120;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .save-state-notif.visible {
+            opacity: 1; transform: translate(-50%, -50%) scale(1);
         }
 
         .reaction-popup { position: absolute; bottom: 15%; display: flex; flex-direction: row; align-items: center; padding: 8px 25px; border-radius: 50px; border: 2px solid var(--heart-red); pointer-events: none; z-index: 10015; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: androidFloat 3.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; backdrop-filter: blur(4px); gap: 12px; font-family: 'Poppins', 'Noto Color Emoji', sans-serif; }
@@ -628,8 +676,6 @@
             box-shadow: 0 4px 15px rgba(255, 175, 189, 0.2);
             transition: border-color 0.3s;
         }
-        #romantic-movie-modal .search-bar:focus { border-color: var(--heart-red); }
-
         #romantic-movie-modal .search-input-with-icon {
             display: flex;
             align-items: center;
@@ -699,20 +745,8 @@
             padding-right: 10px;
         }
 
-        #romantic-movie-modal #private-link-input {
-            border: none;
-            box-shadow: none;
-            background: transparent;
-            outline: none;
-            padding: 0;
-            margin: 0;
-            height: 48px;
-            line-height: 48px;
-            flex: 1;
-            box-sizing: border-box;
-            color: var(--velvet-berry);
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
+        #romantic-movie-modal #private-link-input::placeholder {
+            text-align: center;
         }
 
         #romantic-movie-modal #private-link-area #private-link-play-btn {
@@ -755,6 +789,10 @@
             overflow-y: auto;
             padding-right: 10px;
             flex-grow: 1;
+        }
+
+        #passInput {
+            text-align: center;
         }
 
         #romantic-movie-modal #movie-list::-webkit-scrollbar { width: 6px; }
@@ -903,6 +941,8 @@
                     </video>
                     
                     <div id="subtitle-ghost"></div>
+                    
+                    <div id="playback-ripple"></div>
 
                     <div class="video-controls" onclick="event.stopPropagation()">
                         <div class="progress-area" id="progArea">
@@ -954,11 +994,15 @@
                 <div class="reaction-bar">
                     <div class="react-btn" onclick="sendReaction('🥰', 'So sweet!', 'ani-pulse')">🥰</div>
                     <div class="react-btn" onclick="sendReaction('🌹', 'So romantic!', 'ani-pulse')">🌹</div>
+                    <div class="react-btn" onclick="sendReaction('😘', 'Kissing you', 'ani-pulse')">😘</div>
                     <div class="react-btn" onclick="sendReaction('🤣', 'So funny!', 'ani-bounce')">🤣</div>
                     <div class="react-btn" onclick="sendReaction('😭', 'Crying!', 'ani-shiver')">😭</div>
                     <div class="react-btn" onclick="sendReaction('🥺', 'So sad', 'ani-shiver')">🥺</div>
+                    <div class="react-btn" onclick="sendReaction('🫶', 'Awww', 'ani-pulse')">🫶</div>
+                    <div class="react-btn" onclick="sendReaction('🫵', 'That\'s you', 'ani-pulse')">🫵</div>
                     <div class="react-btn" onclick="sendReaction('👍', 'Yeah!', 'ani-pop')">👍</div>
                     <div class="react-btn" onclick="sendReaction('👌', 'Okay!', 'ani-pulse')">👌</div>
+                    <div class="react-btn" onclick="sendReaction('💯', 'For real', 'ani-pulse')">💯</div>
                     <div class="react-btn" onclick="sendReaction('💀', 'Cooked!', 'ani-pulse')">💀</div>
                     <div class="react-btn" onclick="sendReaction('🔥', 'This is epic!', 'ani-pop')">🔥</div>
                     <div class="react-btn" onclick="sendReaction('👊', 'Punch!', 'ani-pulse')">👊</div>
@@ -976,49 +1020,18 @@
                         <button class="svg-icon-btn" data-tooltip="Whisper" onclick="toggleWhisper()">
                             <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-2008 -248)"><path d="m2018 298.832v8.168c0 .792.47 1.509 1.19 1.829s1.57.183 2.16-.349c0 0 2.97-2.702 5.82-5.297 2.96-2.692 6.82-4.183 10.82-4.183h22.01c3.18 0 6.24-1.264 8.49-3.514s3.51-5.302 3.51-8.484c0-6.108 0-21.002 0-21.002 0-1.104-.9-2-2-2s-2 .896-2 2v21.002c0 2.121-.84 4.156-2.34 5.655-1.5 1.5-3.54 2.343-5.66 2.343h-22.01c-4.99 0-9.81 1.862-13.51 5.223 0 0-2.48 2.257-2.48 2.257 0-2.152 0-4.423 0-5.2v-.28c0-1.105-.9-2-2-2-2.12 0-4.16-.843-5.66-2.343-1.5-1.499-2.34-3.534-2.34-5.655 0-6.109 0-17.895 0-24.004 0-2.121.84-4.156 2.34-5.655 1.5-1.5 3.54-2.343 5.66-2.343h37c1.1 0 2-.896 2-2s-.9-2-2-2h-37c-3.18 0-6.24 1.264-8.49 3.514s-3.51 5.302-3.51 8.484v24.004c0 3.182 1.26 6.234 3.51 8.484 1.78 1.773 4.05 2.934 6.49 3.346zm35.9-40.45c-.27-.824-1.03-1.382-1.9-1.382s-1.63.558-1.9 1.382l-2.63 8.087s-8.09 2.629-8.09 2.629c-.82.268-1.38 1.036-1.38 1.902s.56 1.634 1.38 1.902l8.09 2.629s2.63 8.087 2.63 8.087c.27.824 1.03 1.382 1.9 1.382s1.63-.558 1.9-1.382l2.63-8.087s8.09-2.629 8.09-2.629c.82-.268 1.38-1.036 1.38-1.902s-.56-1.634-1.38-1.902l-8.09-2.629s-2.63-8.087-2.63-8.087zm-31.9 26.618h24c1.1 0 2-.896 2-2s-.9-2-2-2h-24c-1.1 0-2 .896-2 2s.9 2 2 2zm0-8h14c1.1 0 2-.896 2-2s-.9-2-2-2h-14c-1.1 0-2 .896-2 2s.9 2 2 2zm30-11.532 1.04 3.206c.2.609.68 1.086 1.29 1.284l3.2 1.042s-3.2 1.042-3.2 1.042c-.61.198-1.09.675-1.29 1.284l-1.04 3.206s-1.04-3.206-1.04-3.206c-.2-.609-.68-1.086-1.29-1.284l-3.2-1.042s3.2-1.042 3.2-1.042c.61-.198 1.09-.675 1.29-1.284zm-30 3.532h14c1.1 0 2-.896 2-2s-.9-2-2-2h-14c-1.1 0-2 .896-2 2s.9 2 2 2zm44.9-16.618c-.27-.824-1.03-1.382-1.9-1.382s-1.63.558-1.9 1.382l-.91 2.804s-2.81.912-2.81.912c-.82.268-1.38 1.036-1.38 1.902s.56 1.634 1.38 1.902l2.81.912s.91 2.804.91 2.804c.27.824 1.03 1.382 1.9 1.382s1.63-.558 1.9-1.382l.91-2.804s2.81-.912 2.81-.912c.82-.268 1.38-1.036 1.38-1.902s-.56-1.634-1.38-1.902l-2.81-.912s-.91-2.804-.91-2.804z"/></g></svg>
                         </button>
-                        <button class="svg-icon-btn" data-tooltip="Save video state" onclick="saveVideoState()">
-                            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
-                                <g>
-                                    <g>
-                                        <path d="M509.071,109.679L402.321,2.929C400.445,1.054,397.902,0,395.25,0H50C22.43,0,0,22.43,0,50v412c0,27.57,22.43,50,50,50 h412c27.57,0,50-22.43,50-50V116.75C512,114.098,510.946,111.555,509.071,109.679z M411.507,492H100.493V324 c0-16.542,13.458-30,30-30h251.014c16.542,0,30,13.458,30,30V492z M492,462c0,16.542-13.458,30-30,30h-30.493V324 c0-27.57-22.43-50-50-50H130.493c-27.57,0-50,22.43-50,50v168H50c-16.542,0-30-13.458-30-30V50c0-16.542,13.458-30,30-30h57 v118.007c0,27.57,22.43,50,50,50h54.333c5.522,0,10-4.478,10-10c0-5.522-4.478-10-10-10H157c-16.542,0-30-13.458-30-30V20h258 v118.007c0,16.542-13.458,30-30,30h-56c-5.522,0-10,4.478-10,10c0,5.522,4.478,10,10,10h56c27.57,0,50-22.43,50-50V33.893l87,87 V462z"/>
-                                    </g>
-                                </g>
-                                <g>
-                                    <g>
-                                        <path d="M263.069,170.94c-1.859-1.871-4.439-2.93-7.069-2.93s-5.21,1.06-7.07,2.93c-1.86,1.86-2.93,4.431-2.93,7.07 c0,2.63,1.069,5.21,2.93,7.07c1.86,1.859,4.44,2.93,7.07,2.93s5.21-1.07,7.069-2.93c1.86-1.86,2.931-4.44,2.931-7.07 S264.93,172.8,263.069,170.94z"/>
-                                    </g>
-                                </g>
-                                <g>
-                                    <g>
-                                        <path d="M368,331H144c-5.522,0-10,4.478-10,10c0,5.522,4.478,10,10,10h224c5.522,0,10-4.478,10-10 C378,335.478,373.522,331,368,331z"/>
-                                    </g>
-                                </g>
-                                <g>
-                                    <g>
-                                        <path d="M368,383h-68c-5.522,0-10,4.478-10,10c0,5.522,4.478,10,10,10h68c5.522,0,10-4.478,10-10C378,387.478,373.522,383,368,383 z"/>
-                                    </g>
-                                </g>
-                                <g>
-                                    <g>
-                                        <path d="M256.565,383h-0.123c-5.522,0-10,4.478-10,10c0,5.522,4.478,10,10,10h0.123c5.522,0,10-4.478,10-10 C266.565,387.478,262.087,383,256.565,383z"/>
-                                    </g>
-                                </g>
-                                <g>
-                                    <g>
-                                        <path d="M212,383h-68c-5.522,0-10,4.478-10,10c0,5.522,4.478,10,10,10h68c5.522,0,10-4.478,10-10C222,387.478,217.522,383,212,383 z"/>
-                                    </g>
-                                </g>
-                                <g>
-                                    <g>
-                                        <path d="M368,435H144c-5.522,0-10,4.478-10,10c0,5.522,4.478,10,10,10h224c5.522,0,10-4.478,10-10 C378,439.478,373.522,435,368,435z"/>
-                                    </g>
-                                </g>
-                                <g>
-                                    <g>
-                                        <path d="M330.835,40.003h-15.67C300.737,40.003,289,51.74,289,66.168v55.67c0,14.428,11.737,26.165,26.165,26.165h15.67 c14.428,0,26.165-11.737,26.165-26.165v-55.67C357,51.74,345.263,40.003,330.835,40.003z M337,121.838 c0,3.399-2.766,6.165-6.165,6.165h-15.67c-3.399,0-6.165-2.766-6.165-6.165v-55.67c0-3.399,2.766-6.165,6.165-6.165h15.67 c3.399,0,6.165,2.766,6.165,6.165V121.838z"/>
-                                    </g>
-                                </g>
-                            </svg>
+                        <button class="svg-icon-btn" data-tooltip="Save movie state" onclick="saveVideoState()">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="512" height="512">
+<g id="Floppy_Disk_1_">
+	<path style="fill:none;stroke-width:40;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" d="&#10;&#9;&#9;M452,492c22,0,40-18,40-40V140c0-11.201-4.399-21.201-11.599-28.401l-80-80C393.201,24.4,383.201,20,372,20H60c-22,0-40,18-40,40&#10;&#9;&#9;v392c0,22,18,40,40,40h312"/>
+	<path style="fill:none;stroke-width:40;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" d="&#10;&#9;&#9;M100,492V292c0-22.091,17.909-40,40-40h192c22.091,0,40,17.909,40,40v200"/>
+	
+		<line style="fill:none;stroke-width:40;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" x1="180" y1="332" x2="292" y2="332"/>
+	
+		<line style="fill:none;stroke-width:40;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" x1="180" y1="412" x2="292" y2="412"/>
+	<path style="fill:none;stroke-width:40;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" d="&#10;&#9;&#9;M332,20v112c0,22.091-17.909,40-40,40H180c-22.091,0-40-17.909-40-40V20"/>
+	
+		<line style="fill:none;stroke-width:40;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" x1="252" y1="20" x2="252" y2="92"/></g></svg>
                         </button>
                     </div>
                 </div>
@@ -1523,8 +1536,8 @@
             
             video.onerror = () => { loader.style.display = 'none'; };
             video.onloadedmetadata = () => { document.getElementById('durTime').innerText = formatTime(video.duration); };
-            video.addEventListener('play', () => { if(!isRemoteChange) cinemaRef.update({ state: 'play', time: video.currentTime, user: mySymbol }); updatePlayButton(true); persistPlaybackState(); });
-            video.addEventListener('pause', () => { if(!isRemoteChange) cinemaRef.update({ state: 'pause', time: video.currentTime, user: mySymbol }); updatePlayButton(false); persistPlaybackState(); });
+            video.addEventListener('play', () => { if(!isRemoteChange) cinemaRef.update({ state: 'play', time: video.currentTime, user: mySymbol }); updatePlayButton(true); showPlaybackRipple(); persistPlaybackState(); });
+            video.addEventListener('pause', () => { if(!isRemoteChange) cinemaRef.update({ state: 'pause', time: video.currentTime, user: mySymbol }); updatePlayButton(false); showPlaybackRipple(); persistPlaybackState(); });
             
             video.ontimeupdate = () => { 
                 if (!isRemoteChange && !isDragging) { 
@@ -1586,7 +1599,7 @@
                 console.log('Sound error:', e);
             }
         }
-        function togglePlay() { if(video.paused) video.play(); else video.pause(); }
+        function togglePlay() { if(video.paused) video.play(); else video.pause(); showPlaybackRipple(); }
         function seekManual(sec) { let newTime = video.currentTime + sec; if (newTime < 0) newTime = 0; if (newTime > video.duration) newTime = video.duration; video.currentTime = newTime; const act = sec > 0 ? 'right' : 'left'; triggerSeekVisual(act); database.ref('rooms/' + roomID + '/cinema').update({ state: video.paused ? 'pause' : 'play', time: video.currentTime, user: mySymbol, seekAction: act, seekNonce: Math.random() }); }
         function triggerSeekVisual(dir) { const el = document.getElementById('seek-' + dir); el.classList.remove('seek-animate'); void el.offsetWidth; el.classList.add('seek-animate'); }
 
@@ -1689,20 +1702,59 @@
         function showReaction(e, t, a, s) { const c = document.createElement('div'); const isMe = s === myName; c.className = `reaction-popup ${isMe ? 'me-pill' : 'them-pill'}`; c.innerHTML = `<div class="sender-tag">${isMe ? 'You' : s} says...</div><div class="inner-content"><div class="reaction-emoji ${a}">${e}</div><div class="reaction-text">${t}</div></div>`; c.style.left = Math.random() * 40 + 10 + "%"; document.getElementById('cinema-wrapper').appendChild(c); setTimeout(() => c.remove(), 3500); }
         function spawnPetals() { const c = document.getElementById('video-container'); const clr = ['#ff4d6d', '#ffafbd', '#ff1493']; for(let i=0; i<35; i++) { const p = document.createElement('div'); p.className = 'petal'; p.style.backgroundColor = clr[Math.floor(Math.random() * clr.length)]; p.style.left = Math.random() * 100 + "%"; p.style.top = "-10px"; p.style.animationDuration = (Math.random() * 3 + 3) + "s"; p.style.opacity = Math.random() * 0.7 + 0.3; p.style.width = Math.random() * 10 + 10 + "px"; p.style.height = p.style.width; c.appendChild(p); setTimeout(() => p.remove(), 6000); } }
         function sendChatMessage(i) { const input = document.getElementById(i); if (!input.value.trim()) return; database.ref('rooms/'+roomID+'/messages').push({ sender: myName, text: input.value.trim(), time: Date.now() }); input.value = ""; if(i === 'whisperInput') document.getElementById('whisper-overlay').style.display = 'none'; }
+        function addDateHeaderIfNeeded(timestamp) {
+            const messagesEl = document.getElementById("chat-messages");
+            const formattedDate = new Date(timestamp).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }).replace(/ (\d{4})$/, ', $1');
+            const lastDateDivider = messagesEl.querySelector('.date-separator:last-of-type');
+            if (lastDateDivider && lastDateDivider.textContent === formattedDate) return;
+
+            const dateDiv = document.createElement('div');
+            dateDiv.className = 'date-separator';
+            dateDiv.textContent = formattedDate;
+            messagesEl.appendChild(dateDiv);
+        }
+
+        function linkifyText(text) {
+            if (!text) return '';
+            const urlRegex = /\bhttps?:\/\/[\w\-\._~:\/?#\[\]@!$&'()*+,;=%]+/gi;
+            const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return escaped.replace(urlRegex, url => {
+                const validUrl = url.trim();
+                return `<a href="${validUrl}" target="_blank" rel="noopener noreferrer" class="chat-link">${validUrl}</a> <a href="#" class="video-link-action" data-url="${validUrl}" style="font-size:0.7rem; color: var(--heart-red); margin-left:4px;">▶ play</a>`;
+            }).replace(/\n/g, '<br>');
+        }
+
         function listenForChat() { 
             database.ref('rooms/'+roomID+'/messages').on('child_added', snap => { 
                 const m = snap.val(); 
+                addDateHeaderIfNeeded(m.time);
                 const div = document.createElement("div"); 
                 div.className = `msg ${m.sender === myName ? 'me' : 'them'}`; 
-                div.innerHTML = `<div style="font-size:0.6rem; font-weight:bold;">${m.sender===myName?'You':m.sender}</div>${m.text}`; 
-                document.getElementById("chat-messages").appendChild(div); 
-                document.getElementById("chat-messages").scrollTop = document.getElementById("chat-messages").scrollHeight; 
-                
+                const timeLabel = new Date(m.time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                div.innerHTML = `
+                    <div style="font-size:0.6rem; font-weight:bold; margin-bottom:4px;">${m.sender===myName?'You':m.sender}</div>
+                    <div style="margin-bottom:4px; white-space:pre-wrap;">${linkifyText(m.text)}</div>
+                    <div class="msg-time">${timeLabel}</div>
+                `;
+
+                const messageContainer = document.getElementById("chat-messages");
+                messageContainer.appendChild(div); 
+                messageContainer.scrollTop = messageContainer.scrollHeight; 
+
+                // Add click handlers to in-bubble video links so URL click triggers player load
+                div.querySelectorAll('.video-link-action').forEach(button => {
+                    button.addEventListener('click', e => {
+                        e.preventDefault();
+                        const url = button.dataset.url;
+                        if (url) setVideoSrcByUrl(url);
+                    });
+                });
+
                 // Only play sound for NEW messages (sent AFTER we joined the room)
                 if (m.sender !== myName && m.time > initialChatLoadTime) {
                     playSound('message-received.mp3');
                 }
-                
+
                 if (m.sender !== myName && (Date.now() - m.time < 5000)) { 
                     if (document.fullscreenElement || isChatHidden) { 
                         spawnPetals(); 
@@ -1797,23 +1849,46 @@
 
             // Save to database, discarding any previous save
             database.ref('rooms/' + roomID + '/savedVideoState').set(payload).then(() => {
-                // Show feedback
+                // Show feedback (smooth transition and requested velvet berry style)
                 const notification = document.createElement('div');
-                notification.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--heart-red);color:white;padding:15px 25px;border-radius:25px;font-family:Poppins;font-weight:600;z-index:10100;box-shadow:0 10px 30px rgba(0,0,0,0.3);animation:popIn 0.4s ease;';
+                notification.className = 'save-state-notif';
                 notification.textContent = `💾 Saved! Ready to continue at ${video.currentTime.toFixed(1)}s`;
-                document.body.appendChild(notification);
+                const container = document.getElementById('video-container') || document.body;
+                container.appendChild(notification);
+
+                // force reflow so transition from 0 to visible works
+                void notification.offsetWidth;
+                notification.classList.add('visible');
+
+                setTimeout(() => notification.classList.remove('visible'), 2500);
                 setTimeout(() => notification.remove(), 3000);
             }).catch((err) => {
                 alert('Failed to save: ' + (err.message || 'Unknown error'));
             });
         }
 
+        function getValidatedVideoUrl(url) {
+            if (!url || typeof url !== 'string') return null;
+            let cleaned = url.trim();
+            if (!/^https?:\/\//i.test(cleaned)) {
+                return null;
+            }
+            // Accept .mp4 and stream-friendly links; remove accidental surrounding punctuation
+            cleaned = cleaned.replace(/[\s<>"']+/g, '');
+            return cleaned;
+        }
+
         function setVideoSrcByUrl(url) {
+            const validatedUrl = getValidatedVideoUrl(url);
+            if (!validatedUrl) {
+                console.warn('Invalid video URL passed:', url);
+                return;
+            }
             subtitleData = [];
             document.getElementById('subtitle-ghost').innerHTML = "";
             isReadyAnimShown = false;
             database.ref('rooms/' + roomID).update({
-                videoSrc: url,
+                videoSrc: validatedUrl,
                 subtitleSrc: "",
                 subtitleContent: "",
                 subtitleMode: "url",
@@ -1822,7 +1897,7 @@
             });
             // persist selected video immediately
             database.ref('rooms/' + roomID + '/lastPlayback').set({
-                videoSrc: url,
+                videoSrc: validatedUrl,
                 time: 0,
                 state: 'pause',
                 updatedAt: Date.now(),
@@ -2007,8 +2082,13 @@
 
                     setTimeout(() => {
                         if(!romanticModalOpen) return;
-                        document.getElementById('romantic-search-status').innerText = "Connection lost...";
-                        // Keep scanning section visible briefly; user can still continue.
+                        document.getElementById('romantic-search-status').innerText = "Connection lost. Using default list...";
+                        romanticAllMovies = [
+                            { name: 'Moonlit Poetry (Sample).mp4' },
+                            { name: 'Cupid&#x27;s Whispers (Sample).mp4' },
+                            { name: 'Starlight Cinema (Sample).mp4' }
+                        ];
+                        renderRomanticMovies(romanticAllMovies);
                     }, remaining);
                 });
         }
@@ -2087,17 +2167,34 @@
         }
 
         function playPrivateLinkMovie(url) {
-            if (typeof url === 'string' && url.trim()) {
-                database.ref('rooms/' + roomID).update({ modalOpen: false });
-                setVideoSrcByUrl(url.trim());
-                hideRomanticMovieOverlay();
+            const validUrl = getValidatedVideoUrl(url);
+            if (!validUrl) {
+                alert('Please enter a valid https:// URL for the video file.');
+                return;
             }
+            database.ref('rooms/' + roomID).update({ modalOpen: false });
+            setVideoSrcByUrl(validUrl);
+            hideRomanticMovieOverlay();
         }
 
         function updatePlayButton(isPlaying) {
-            const pauseSVG = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><g id="a98320b4-c804-49e8-bb64-e76768f68178" data-name="Layer 30"><path d="m13 5v22a3 3 0 0 1 -3 3h-1a3 3 0 0 1 -3-3v-22a3 3 0 0 1 3-3h1a3 3 0 0 1 3 3zm10-3h-1a3 3 0 0 0 -3 3v22a3 3 0 0 0 3 3h1a3 3 0 0 0 3-3v-22a3 3 0 0 0 -3-3z"/></g></svg>';
-            const playSVG = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 163.861 163.861" style="enable-background:new 0 0 163.861 163.861;" xml:space="preserve"><g><path d="M34.857,3.613C20.084-4.861,8.107,2.081,8.107,19.106v125.637c0,17.042,11.977,23.975,26.75,15.509L144.67,97.275 c14.778-8.477,14.778-22.211,0-30.686L34.857,3.613z"/></g></svg>';
+            const pauseSVG = '<svg height="512" viewBox="0 0 32 32" width="512" xmlns="http://www.w3.org/2000/svg"><g id="a98320b4-c804-49e8-bb64-e76768f68178" data-name="Layer 30"><path d="m13 5v22a3 3 0 0 1 -3 3h-1a3 3 0 0 1 -3-3v-22a3 3 0 0 1 3-3h1a3 3 0 0 1 3 3zm10-3h-1a3 3 0 0 0 -3 3v22a3 3 0 0 0 3 3h1a3 3 0 0 0 3-3v-22a3 3 0 0 0 -3-3z"/></g></svg>';
+            const playSVG = '<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="163.861px" height="163.861px" viewBox="0 0 163.861 163.861" style="enable-background:new 0 0 163.861 163.861;" xml:space="preserve"><g><path d="M34.857,3.613C20.084-4.861,8.107,2.081,8.107,19.106v125.637c0,17.042,11.977,23.975,26.75,15.509L144.67,97.275 c14.778-8.477,14.778-22.211,0-30.686L34.857,3.613z"/></g></svg>';
             playBtn.innerHTML = isPlaying ? pauseSVG : playSVG;
+        }
+
+        function showPlaybackRipple() {
+            const ripple = document.getElementById('playback-ripple');
+            const currentIcon = playBtn.querySelector('svg');
+            if (currentIcon) {
+                const clonedIcon = currentIcon.cloneNode(true);
+                ripple.innerHTML = '';
+                ripple.appendChild(clonedIcon);
+                ripple.classList.add('active');
+                setTimeout(() => {
+                    ripple.classList.remove('active');
+                }, 700);
+            }
         }
 
         spawnHearts();
